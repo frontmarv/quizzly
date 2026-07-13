@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import RegistrationView, CookieRefreshView
+from .views import RegistrationView, CookieRefreshView, CookieTokenObtainPairView, LogoutView
+
 
 urlpatterns = [
     path('register/', RegistrationView.as_view(), name='register'),
-    path('login/', RegistrationView.as_view(), name='register'),
-    path('logout/', RegistrationView.as_view(), name='register'),
-    path('token/refresh/', CookieRefreshView.as_view(), name='register'),
+    path('login/', CookieTokenObtainPairView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('token/refresh/', CookieRefreshView.as_view(), name='token_refresh'),
 ]
