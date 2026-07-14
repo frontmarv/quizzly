@@ -22,6 +22,8 @@ class QuizzSerializer(serializers.ModelSerializer):
         model = Quizz
         fields = ['id', 'title', 'description', 'created_at',
                   'updated_at', 'video_url', 'questions']
+        read_only_fields = ['id', 'created_at',
+                            'updated_at', 'video_url', 'questions']
 
 
 class QuizRequestSerializer(serializers.Serializer):

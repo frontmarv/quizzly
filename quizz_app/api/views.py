@@ -13,36 +13,48 @@ from ..services.services import download_youtube_audio, transcribe_audio, genera
 class QuizzDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, pk):
+    def get_user_quizz(self, pk, request):
+        """Get quiz and verify it belongs to the user. Returns (quizz, error_response)."""
         try:
-            quizz = Quizz.objects.get(pk=pk, user=request.user)
-            serializer = QuizzSerializer(quizz)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            quizz = Quizz.objects.get(pk=pk)
         except Quizz.DoesNotExist:
-            return Response({"detail": "Quiz not found"}, status=status.HTTP_404_NOT_FOUND)
+            return None, Response({"detail": "Quiz not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if quizz.user != request.user:
+            return None, Response({"detail": "Quiz does not belong to the user"}, status=status.HTTP_403_FORBIDDEN)
+
+        return quizz, None
+
+    def get(self, request, pk):
+        quizz, error_response = self.get_user_quizz(pk, request)
+        if error_response:
+            return error_response
+
+        serializer = QuizzSerializer(quizz)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, pk):
-        try:
-            quizz = Quizz.objects.get(pk=pk, user=request.user)
-            serializer = QuizzSerializer(
-                quizz, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        except Quizz.DoesNotExist:
-            return Response({"detail": "Quiz not found"}, status=status.HTTP_404_NOT_FOUND)
+        quizz, error_response = self.get_user_quizz(pk, request)
+        if error_response:
+            return error_response
+
+        serializer = QuizzSerializer(
+            quizz, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        try:
-            quizz = Quizz.objects.get(pk=pk, user=request.user)
-            quizz.delete()
-            return Response({"detail": "Quiz deleted"}, status=status.HTTP_204_NO_CONTENT)
-        except Quizz.DoesNotExist:
-            return Response({"detail": "Quiz not found"}, status=status.HTTP_404_NOT_FOUND)
+        quizz, error_response = self.get_user_quizz(pk, request)
+        if error_response:
+            return error_response
+
+        quizz.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GenerateQuizView(APIView):
+class QuizView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
