@@ -7,6 +7,8 @@ ENV/
 
 # Personal files
 copy.txt
+instructions.md
+CODE_REVIEW_REGISTRATION_API.md
 
 # Python
 __pycache__/
