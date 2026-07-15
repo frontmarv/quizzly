@@ -95,7 +95,7 @@ winget install --id Gyan.FFmpeg -e --source winget
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/frontmarv/quizzly.git
 cd quizzly
 ```
 
