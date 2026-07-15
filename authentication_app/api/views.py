@@ -1,11 +1,12 @@
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from .serializers import CustomTokenObtainPairSerializer, RegistrationSerializer
 from .utils import set_auth_cookies, blacklist_refresh_token, clear_auth_cookies, set_access_cookie
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from rest_framework_simplejwt.exceptions import TokenError
 
 
 class RegistrationView(APIView):

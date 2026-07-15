@@ -1,7 +1,7 @@
 """Utility functions for authentication API operations."""
 
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 def blacklist_refresh_token(refresh_token):

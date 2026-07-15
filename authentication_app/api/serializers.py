@@ -1,7 +1,7 @@
 """Serializers for user registration and authentication."""
 
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
@@ -35,9 +35,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         Returns:
             str: The confirmed_password value if valid
-
-        Raises:
-            ValidationError: If passwords do not match
         """
         password = self.initial_data.get('password')
         if password and value and password != value:
@@ -52,9 +49,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         Returns:
             str: The email value if unique
-
-        Raises:
-            ValidationError: If email already exists in database
         """
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError('Email already exists')
@@ -99,9 +93,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         Returns:
             dict: Validated data including tokens and user information
-
-        Raises:
-            ValidationError: If username does not exist or password invalid
         """
         username = attrs.get('username')
         password = attrs.get('password')

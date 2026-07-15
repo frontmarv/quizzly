@@ -1,7 +1,7 @@
 """Django admin configuration for registration app."""
 
 from django.contrib import admin
-from registration_app.models import User
+from authentication_app.models import User
 
 
 @admin.register(User)

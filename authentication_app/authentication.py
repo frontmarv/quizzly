@@ -3,9 +3,11 @@ from rest_framework.exceptions import AuthenticationFailed
 
 
 class CookieJWTAuthentication(JWTAuthentication):
-    """
-    Custom JWT Authentication, die den Token aus Cookies liest,
-    falls er nicht im Authorization Header vorhanden ist.
+    """Custom JWT authentication that reads tokens from cookies.
+
+    Falls back to reading JWT tokens from HTTP-only cookies if the token
+    is not provided in the Authorization header. This approach is more
+    secure against XSS attacks.
     """
 
     def authenticate(self, request):

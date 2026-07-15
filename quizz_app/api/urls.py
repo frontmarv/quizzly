@@ -1,4 +1,5 @@
 from django.urls import path
+
 from quizz_app.api.views import QuizView, QuizzDetailView
 
 urlpatterns = [
