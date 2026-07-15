@@ -130,6 +130,8 @@ GEMINI_API_KEY=your-gemini-api-key-here
 ### Database Setup
 
 ```bash
+python manage.py makemigrations
+
 # Apply migrations
 python manage.py migrate
 
