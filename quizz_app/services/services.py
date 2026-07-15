@@ -1,7 +1,5 @@
 
-import multiprocessing
 import os
-
 import torch
 import yt_dlp
 from faster_whisper import WhisperModel
@@ -38,7 +36,7 @@ def download_youtube_audio(youtube_url: str, output_filename: str = "audio") -> 
 
 
 def transcribe_audio(file_path: str) -> str:
-    """Transcribe audio file to text using Faster Whisper model.
+    """Transcribe audio file to text using Whisper model.
 
     Converts audio content to text using the Whisper turbo model. Automatically
     detects GPU availability and selects appropriate compute settings for optimal
@@ -51,58 +49,19 @@ def transcribe_audio(file_path: str) -> str:
     Returns:
         str: Transcribed text from the audio file
     """
-    cpu_cores = multiprocessing.cpu_count()
-
     if torch.cuda.is_available():
         device = "cuda"
         compute_type = "float16"
-        threads = 4
     else:
         device = "cpu"
         compute_type = "int8"
-        threads = max(1, cpu_cores - 2)
 
     try:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"Audio file not found: {file_path}")
 
-        try:
-            model = WhisperModel(
-                "turbo",
-                device=device,
-                compute_type=compute_type,
-                cpu_threads=threads,
-                num_workers=2
-            )
-        except ValueError as e:
-            if device == "cuda" and compute_type == "float16":
-                print("GPU does not support float16. Switching to int8...")
-                try:
-                    model = WhisperModel(
-                        "turbo",
-                        device=device,
-                        compute_type="int8",
-                        cpu_threads=threads,
-                        num_workers=2
-                    )
-                except Exception:
-                    print("int8 failed. Falling back to float32...")
-                    model = WhisperModel(
-                        "turbo",
-                        device=device,
-                        compute_type="float32",
-                        cpu_threads=threads,
-                        num_workers=2
-                    )
-            else:
-                raise e
-
-        segments, info = model.transcribe(
-            file_path,
-            beam_size=5,
-            vad_filter=True,
-            vad_parameters=dict(min_silence_duration_ms=500)
-        )
+        model = WhisperModel("turbo", device=device, compute_type=compute_type)
+        segments, info = model.transcribe(file_path, beam_size=5)
 
         result_text = "".join([segment.text for segment in segments]).strip()
 
@@ -111,8 +70,12 @@ def transcribe_audio(file_path: str) -> str:
 
         return result_text
 
+    except FileNotFoundError as e:
+        raise FileNotFoundError(f"Error: {str(e)}") from e
+    except ValueError as e:
+        raise ValueError(f"Validation error: {str(e)}") from e
     except Exception as e:
-        raise RuntimeError(f"Transcription error: {str(e)}") from e
+        raise RuntimeError(f"Unexpected transcription error: {str(e)}") from e
 
 
 class QuestionSchema(BaseModel):
