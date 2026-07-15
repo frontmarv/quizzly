@@ -121,10 +121,34 @@ pip install -r requirements.txt
 
 ### Environment Setup
 
-Create a `.env` file in the project root and past your Gemini API key there:
+1. Copy the `.env.template` file to `.env`:
+
+```bash
+cp .env.template .env
+```
+
+2. Generate a new Django SECRET_KEY:
+
+```bash
+python manage.py shell
+```
+
+Then in the Python shell:
+
+```python
+from django.core.management.utils import get_random_secret_key
+print(get_random_secret_key())
+```
+
+Copy the generated key and paste it into your `.env` file.
+
+3. Edit the `.env` file and add your Gemini API key and other configuration values:
 
 ```env
-GEMINI_API_KEY=your-gemini-api-key-here
+SECRET_KEY="your-generated-secret-key-here"
+GEMINI_API_KEY="your-gemini-api-key-here"
+ALLOWED_HOSTS=localhost,127.0.0.1
+# ... other settings
 ```
 
 ### Database Setup

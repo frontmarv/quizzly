@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 
 class Quizz(models.Model):
@@ -14,7 +14,7 @@ class Quizz(models.Model):
         video_url: URL of the source video
     """
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='quizzes')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='quizzes')
     title = models.CharField(max_length=255)
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
