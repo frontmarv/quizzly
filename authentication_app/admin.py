@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from authentication_app.models import User
 
 
-# Unregister Django's default User admin
 from django.contrib.auth.models import User as DjangoUser
 try:
     admin.site.unregister(DjangoUser)

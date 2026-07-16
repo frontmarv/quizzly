@@ -61,11 +61,9 @@ class QuizRequestSerializer(serializers.Serializer):
         parsed = urlparse(value)
         video_id = None
 
-        # Short link format (youtu.be/ID)
         if parsed.hostname == 'youtu.be':
             video_id = parsed.path.lstrip('/')
 
-        # Standard link format (youtube.com/watch?v=ID)
         elif parsed.hostname in ['www.youtube.com', 'youtube.com'] and parsed.path == '/watch':
             video_id = parse_qs(parsed.query).get('v', [None])[0]
 

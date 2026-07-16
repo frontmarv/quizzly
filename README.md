@@ -54,7 +54,7 @@ quizzly/
 
 ## Prerequisites
 
-- Python 3.9+
+- Python 3.12+
 - pip (Python package manager)
 - Virtual environment (recommended)
 - FFmpeg (for audio processing)
